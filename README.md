@@ -1,5 +1,19 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Branding
+
+Transcript Lite uses a clean, navy-and-blue palette with the "TL" mark. PWA icons live in `public/icons/`, and the favicon is `app/favicon.ico`. Keep the PDF output in Helvetica for consistent, professional exports.
+
+## Ads Configuration
+
+Set these environment variables before deploying AdSense:
+
+```
+NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX
+NEXT_PUBLIC_ADSENSE_SLOT_DASHBOARD=0000000000
+NEXT_PUBLIC_ADSENSE_SLOT_STUDENT=0000000000
+```
+
 ## Getting Started
 
 First, run the development server:
@@ -34,3 +48,4 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# transcript-lite
