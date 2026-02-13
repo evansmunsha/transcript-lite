@@ -281,9 +281,9 @@ export default function SheetPage() {
   if (!loading && !sheet) {
     return (
       <div className="min-h-screen bg-zinc-50 text-zinc-900">
-        <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-6 py-20 text-center">
-          <h1 className="text-2xl font-semibold">Sheet not found</h1>
-          <p className="mt-2 text-sm text-zinc-600">
+        <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-12 text-center sm:px-6 sm:py-20">
+          <h1 className="text-xl font-semibold sm:text-2xl">Sheet not found</h1>
+          <p className="mt-2 text-xs text-zinc-600 sm:text-sm">
             The sheet ID in the URL doesn&apos;t match any local records.
           </p>
           <Link
@@ -299,7 +299,7 @@ export default function SheetPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto w-full max-w-6xl px-6 py-10">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
         <Link
           href={sheet ? `/student/${sheet.studentId}` : "/"}
           className="text-xs font-semibold uppercase tracking-widest text-zinc-500 hover:text-zinc-800"
@@ -307,11 +307,11 @@ export default function SheetPage() {
           Back to student
         </Link>
 
-        <header className="mt-4 flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold tracking-tight">
+        <header className="mt-3 flex flex-col gap-2 sm:mt-4">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             {sheet?.title ?? "Loading..."}
           </h1>
-          <p className="text-sm text-zinc-500">
+          <p className="text-xs text-zinc-500 sm:text-sm">
             {student?.name ?? "Loading student"}{" "}
             {student?.program ? ` - ${student.program}` : ""}
           </p>
@@ -340,11 +340,11 @@ export default function SheetPage() {
           </button>
         </div>
 
-        <section className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <section className="mt-6 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:mt-8 sm:p-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Full rows</h2>
-              <p className="text-sm text-zinc-500">
+              <h2 className="text-base font-semibold sm:text-lg">Full rows</h2>
+              <p className="text-xs text-zinc-500 sm:text-sm">
                 Add complete results with codes, years, and grades.
               </p>
             </div>
@@ -357,8 +357,8 @@ export default function SheetPage() {
             </button>
           </div>
 
-          <div className="mt-6 overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
+          <div className="mt-4 overflow-x-auto sm:mt-6">
+            <table className="min-w-full text-left text-xs sm:text-sm">
               <thead className="border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500">
                 <tr>
                   <th className="px-3 py-2">Course</th>
@@ -374,7 +374,7 @@ export default function SheetPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="px-3 py-6 text-center text-sm text-zinc-500"
+                      className="px-3 py-6 text-center text-xs text-zinc-500 sm:text-sm"
                     >
                       No rows yet. Add a row to begin.
                     </td>
@@ -471,10 +471,12 @@ export default function SheetPage() {
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <section className="mt-6 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:mt-8 sm:p-6">
           <div>
-            <h2 className="text-lg font-semibold">Course-only entries</h2>
-            <p className="text-sm text-zinc-500">
+            <h2 className="text-base font-semibold sm:text-lg">
+              Course-only entries
+            </h2>
+            <p className="text-xs text-zinc-500 sm:text-sm">
               Add quick course references without metadata.
             </p>
           </div>
@@ -503,7 +505,7 @@ export default function SheetPage() {
 
           <div className="mt-5 space-y-2">
             {sortedCourseRows.length === 0 ? (
-              <p className="text-sm text-zinc-500">
+              <p className="text-xs text-zinc-500 sm:text-sm">
                 No course-only entries yet.
               </p>
             ) : (
@@ -535,11 +537,13 @@ export default function SheetPage() {
 
       {exportOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-8">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-4 shadow-xl sm:p-6">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-lg font-semibold">Export PDF</h2>
-                <p className="mt-1 text-sm text-zinc-500">
+                <h2 className="text-base font-semibold sm:text-lg">
+                  Export PDF
+                </h2>
+                <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
                   Choose a layout and download the statement of results.
                 </p>
               </div>

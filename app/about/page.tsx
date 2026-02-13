@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto w-full max-w-5xl px-6 py-12">
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-12">
         <Link
           href="/"
           className="text-xs font-semibold uppercase tracking-widest text-zinc-500 hover:text-zinc-800"
@@ -16,10 +16,10 @@ export default function AboutPage() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">
             Transcript Lite
           </span>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-4xl">
             Offline student transcript PDF generator
           </h1>
-          <p className="mt-3 text-sm text-zinc-600 sm:text-base">
+          <p className="mt-3 text-xs text-zinc-600 sm:text-base">
             Transcript Lite helps students, tutors, and small institutions turn
             raw result data into clean, professional PDFs in minutes. Everything
             works offline after the first load, and all data stays on your
@@ -27,8 +27,8 @@ export default function AboutPage() {
           </p>
         </header>
 
-        <section className="mt-10 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <section className="mt-6 grid gap-4 sm:mt-10 sm:gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5">
             <p className="text-sm font-semibold text-zinc-900">
               Dashboard overview
             </p>
@@ -45,7 +45,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5">
             <p className="text-sm font-semibold text-zinc-900">
               Professional PDF output
             </p>
@@ -63,14 +63,14 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="mt-10 grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5">
+        <section className="mt-6 grid gap-4 sm:mt-10 md:grid-cols-3">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-zinc-900">Offline-ready</h3>
             <p className="mt-2 text-xs text-zinc-500">
               Load once, then keep working without internet access.
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-zinc-900">
               Local-first privacy
             </h3>
@@ -78,7 +78,7 @@ export default function AboutPage() {
               Data is stored only in your browser on your device.
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-zinc-900">
               Simple exports
             </h3>

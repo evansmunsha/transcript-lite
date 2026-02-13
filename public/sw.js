@@ -1,19 +1,19 @@
-const CACHE_NAME = "transcript-lite-v3";
-const APP_SHELL = [
+const CACHE_NAME = "transcript-lite-v4";
+const CORE_ASSETS = [
   "/",
+  "/offline.html",
   "/manifest.webmanifest",
   "/ads.txt",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/icon-32.png",
-  "/screenshots/dashboard.png",
-  "/screenshots/pdf-preview.png",
-  "/sample/transcript-lite-sample.pdf",
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.allSettled(CORE_ASSETS.map((asset) => cache.add(asset)))
+    )
   );
   self.skipWaiting();
 });
@@ -44,12 +44,27 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put("/", copy));
           return response;
         })
-        .catch(() => caches.match("/") || caches.match("/"))
+        .catch(async () => {
+          const cached = await caches.match("/");
+          return cached || caches.match("/offline.html");
+        })
     );
     return;
   }
 
   if (requestUrl.origin === self.location.origin) {
+    const pathname = requestUrl.pathname;
+    const isStaticBundle = pathname.startsWith("/_next/static/");
+    const isStaticAsset =
+      pathname.startsWith("/icons/") ||
+      pathname.startsWith("/screenshots/") ||
+      pathname.startsWith("/sample/");
+
+    if (isStaticBundle || isStaticAsset) {
+      event.respondWith(cacheFirst(event.request));
+      return;
+    }
+
     event.respondWith(
       caches.match(event.request).then((cached) => {
         if (cached) {
@@ -66,3 +81,14 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) {
+    return cached;
+  }
+  const response = await fetch(request);
+  const copy = response.clone();
+  caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+  return response;
+}

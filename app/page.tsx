@@ -170,21 +170,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto w-full max-w-5xl px-6 py-10">
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">
               Transcript Lite
             </span>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-4xl">
               Students
             </h1>
-            <p className="mt-2 text-sm text-zinc-600 sm:text-base">
+            <p className="mt-2 text-xs text-zinc-600 sm:text-base">
               Create students, track result sheets, and export PDFs without ever
               leaving offline mode.
             </p>
           </div>
-          <nav className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
             <Link href="/about" className="hover:text-zinc-900">
               About
             </Link>
@@ -194,27 +194,27 @@ export default function Home() {
             <Link href="/terms" className="hover:text-zinc-900">
               Terms
             </Link>
-          </nav>
+          </div>
         </div>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
+        <section className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.1fr_1fr]">
           <form
             onSubmit={handleCreate}
-            className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
+            className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6"
           >
             <h2 className="text-lg font-semibold">Add a student</h2>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
               Name and program are required.
             </p>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-5 space-y-4 sm:mt-6">
               <label className="block text-sm font-medium text-zinc-700">
                 Name
                 <input
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-                  placeholder="Ada Lovelace"
+                  placeholder="Misheck Sakala"
                   required
                 />
               </label>
@@ -224,7 +224,7 @@ export default function Home() {
                   value={program}
                   onChange={(event) => setProgram(event.target.value)}
                   className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-                  placeholder="Computer Science"
+                  placeholder="Biolog"
                   required
                 />
               </label>
@@ -232,7 +232,7 @@ export default function Home() {
 
             <button
               type="submit"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+              className="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800 sm:mt-6"
             >
               Create student
             </button>
@@ -241,7 +241,7 @@ export default function Home() {
             ) : null}
           </form>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Student roster</h2>
               <button
@@ -253,9 +253,11 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4 sm:mt-5">
               {loading ? (
-                <p className="text-sm text-zinc-500">Loading students...</p>
+                <p className="text-xs text-zinc-500 sm:text-sm">
+                  Loading students...
+                </p>
               ) : students.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 px-4 py-6 text-center">
                   <p className="text-sm font-medium text-zinc-700">
@@ -301,11 +303,11 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mt-6 border-t border-zinc-100 pt-5">
+            <div className="mt-5 border-t border-zinc-100 pt-4 sm:mt-6 sm:pt-5">
               <h3 className="text-sm font-semibold text-zinc-900">
                 Backup & restore
               </h3>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
                 Export a JSON backup or restore data from a previous export.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -347,8 +349,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-8 grid gap-4 lg:grid-cols-3">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <section className="mt-6 grid gap-4 sm:mt-8 lg:grid-cols-3">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5">
             <h3 className="text-sm font-semibold text-zinc-900">
               Share Transcript Lite
             </h3>
@@ -371,7 +373,7 @@ export default function Home() {
             ) : null}
           </div>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5">
             <h3 className="text-sm font-semibold text-zinc-900">
               Download sample PDF
             </h3>
@@ -386,7 +388,7 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5">
             <h3 className="text-sm font-semibold text-zinc-900">Send feedback</h3>
             <p className="mt-2 text-xs text-zinc-500">
               Share ideas, bugs, or feature requests to shape the next release.
@@ -400,7 +402,7 @@ export default function Home() {
           </div>
         </section>
 
-        <p className="mt-8 text-center text-xs text-zinc-500">
+        <p className="mt-6 text-center text-xs text-zinc-500 sm:mt-8">
           Built by Evans Munsha.
         </p>
       </div>

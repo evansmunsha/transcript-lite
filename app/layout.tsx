@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import SwRegister from "./sw-register";
+import { Analytics } from "@vercel/analytics/next"
+import InstallButton from "@/components/pwa/InstallButton";
 
 export const metadata: Metadata = {
   title: "Transcript Lite",
@@ -22,7 +24,9 @@ export default function RootLayout({
         <link rel="icon" href="/icons/icon-32.png" sizes="32x32" />
       </head>
       <body className="antialiased">
+        <Analytics />
         <SwRegister />
+        <InstallButton />
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT ? (
           <Script
             id="adsense-script"
@@ -33,7 +37,7 @@ export default function RootLayout({
           />
         ) : null}
         {children}
-        <footer className="border-t border-zinc-200 bg-white py-4 text-center text-xs text-zinc-500">
+        <footer className="border-t border-zinc-200 bg-white py-3 text-center text-xs text-zinc-500 sm:py-4">
           Built by Evans Munsha.
         </footer>
       </body>

@@ -128,9 +128,11 @@ export default function StudentPage() {
   if (!loading && !student) {
     return (
       <div className="min-h-screen bg-zinc-50 text-zinc-900">
-        <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-6 py-20 text-center">
-          <h1 className="text-2xl font-semibold">Student not found</h1>
-          <p className="mt-2 text-sm text-zinc-600">
+        <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-12 text-center sm:px-6 sm:py-20">
+          <h1 className="text-xl font-semibold sm:text-2xl">
+            Student not found
+          </h1>
+          <p className="mt-2 text-xs text-zinc-600 sm:text-sm">
             The student ID in the URL doesn&apos;t match any local records.
           </p>
           <Link
@@ -146,7 +148,7 @@ export default function StudentPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto w-full max-w-5xl px-6 py-10">
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
         <Link
           href="/"
           className="text-xs font-semibold uppercase tracking-widest text-zinc-500 hover:text-zinc-800"
@@ -154,23 +156,25 @@ export default function StudentPage() {
           Back to dashboard
         </Link>
 
-        <header className="mt-4 flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold tracking-tight">
+        <header className="mt-3 flex flex-col gap-2 sm:mt-4">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             {student?.name ?? "Loading..."}
           </h1>
-          <p className="text-sm text-zinc-500">{student?.program}</p>
+          <p className="text-xs text-zinc-500 sm:text-sm">
+            {student?.program}
+          </p>
         </header>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
+        <section className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.1fr_1fr]">
           <form
             onSubmit={handleCreateSheet}
-            className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
+            className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6"
           >
             <h2 className="text-lg font-semibold">Create a sheet</h2>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
               Each sheet can hold full rows and course-only notes.
             </p>
-            <label className="mt-6 block text-sm font-medium text-zinc-700">
+            <label className="mt-5 block text-sm font-medium text-zinc-700 sm:mt-6">
               Sheet title
               <input
                 value={title}
@@ -182,7 +186,7 @@ export default function StudentPage() {
             </label>
             <button
               type="submit"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+              className="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800 sm:mt-6"
             >
               Create sheet
             </button>
@@ -191,7 +195,7 @@ export default function StudentPage() {
             ) : null}
           </form>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Result sheets</h2>
               <button
@@ -207,9 +211,11 @@ export default function StudentPage() {
               </button>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4 sm:mt-5">
               {loading ? (
-                <p className="text-sm text-zinc-500">Loading sheets...</p>
+                <p className="text-xs text-zinc-500 sm:text-sm">
+                  Loading sheets...
+                </p>
               ) : sheets.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 px-4 py-6 text-center">
                   <p className="text-sm font-medium text-zinc-700">
