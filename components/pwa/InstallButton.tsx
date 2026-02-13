@@ -16,6 +16,8 @@ const isStandaloneMode = () =>
   window.matchMedia("(display-mode: standalone)").matches ||
   (window.navigator as Navigator & { standalone?: boolean }).standalone;
 
+const INSTALL_FLAG_KEY = "transcript-lite-installed";
+
 export default function InstallButton({
   className = "",
   label = "Download app",
@@ -36,14 +38,31 @@ export default function InstallButton({
       setVisible(false);
       setDeferredPrompt(null);
       setShowHelp(false);
+      try {
+        window.localStorage.setItem(INSTALL_FLAG_KEY, "true");
+      } catch {
+        // ignore storage errors
+      }
     };
+
+    let alreadyInstalled = false;
+    try {
+      alreadyInstalled = window.localStorage.getItem(INSTALL_FLAG_KEY) === "true";
+    } catch {
+      alreadyInstalled = false;
+    }
 
     if (isStandaloneMode()) {
       setVisible(false);
+      try {
+        window.localStorage.setItem(INSTALL_FLAG_KEY, "true");
+      } catch {
+        // ignore storage errors
+      }
       return;
     }
 
-    setVisible(true);
+    setVisible(!alreadyInstalled);
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
 
