@@ -39,6 +39,9 @@ export default function SheetPage() {
   const [template, setTemplate] = useState<PdfTemplate>("compact");
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const [shareError, setShareError] = useState<string | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -61,13 +64,10 @@ export default function SheetPage() {
     return cleaned || "transcript";
   };
 
-  const handleExport = async () => {
+  const generatePdfBlob = async () => {
     if (!sheet || !student) {
-      return;
+      return null;
     }
-
-    setExporting(true);
-    setExportError(null);
 
     try {
       const blob = await pdf(
@@ -80,24 +80,95 @@ export default function SheetPage() {
         />
       ).toBlob();
 
-      const url = URL.createObjectURL(blob);
       const filename = `statement-of-results-${safeName(
         student.name
       )}-${safeName(sheet.title)}.pdf`;
+      return { blob, filename };
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    setExportError(null);
+    setShareError(null);
+    setShareMessage(null);
+
+    try {
+      const result = await generatePdfBlob();
+      if (!result) {
+        setExportError("Failed to generate PDF.");
+        return;
+      }
+
+      downloadBlob(result.blob, result.filename);
       setExportOpen(false);
     } catch (err) {
       console.error(err);
       setExportError("Failed to generate PDF.");
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleSharePdf = async () => {
+    if (!sheet || !student) {
+      return;
+    }
+
+    setSharing(true);
+    setShareError(null);
+    setShareMessage(null);
+    setExportError(null);
+
+    try {
+      const result = await generatePdfBlob();
+      if (!result) {
+        setShareError("Failed to generate PDF for sharing.");
+        return;
+      }
+
+      const file = new File([result.blob], result.filename, {
+        type: "application/pdf",
+      });
+
+      const canShareFiles =
+        typeof navigator !== "undefined" &&
+        "canShare" in navigator &&
+        navigator.canShare({ files: [file] });
+
+      if (navigator.share && canShareFiles) {
+        await navigator.share({
+          title: sheet.title || "Statement of Results",
+          text: `Statement of Results for ${student.name}.`,
+          files: [file],
+        });
+        setShareMessage("Share sheet opened.");
+        return;
+      }
+
+      downloadBlob(result.blob, result.filename);
+      setShareMessage(
+        "Sharing not supported on this device. The PDF was downloaded—attach it from Downloads."
+      );
+    } catch (err) {
+      console.error(err);
+      setShareError("Failed to share PDF.");
+    } finally {
+      setSharing(false);
     }
   };
 
@@ -332,7 +403,12 @@ export default function SheetPage() {
           </div>
           <button
             type="button"
-            onClick={() => setExportOpen(true)}
+            onClick={() => {
+              setExportError(null);
+              setShareError(null);
+              setShareMessage(null);
+              setExportOpen(true);
+            }}
             disabled={!sheet || !student}
             className="inline-flex items-center justify-center rounded-lg border border-zinc-200 px-4 py-2 text-xs font-semibold text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
           >
@@ -595,18 +671,32 @@ export default function SheetPage() {
               <div className="text-xs text-zinc-500">
                 {exportError ? (
                   <span className="text-rose-600">{exportError}</span>
+                ) : shareError ? (
+                  <span className="text-rose-600">{shareError}</span>
+                ) : shareMessage ? (
+                  <span className="text-emerald-600">{shareMessage}</span>
                 ) : (
                   <span>PDF will be generated offline.</span>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={handleExport}
-                disabled={exporting}
-                className="inline-flex items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {exporting ? "Preparing..." : "Download PDF"}
-              </button>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={handleSharePdf}
+                  disabled={sharing || exporting}
+                  className="inline-flex items-center justify-center rounded-lg border border-zinc-200 px-4 py-2 text-xs font-semibold text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {sharing ? "Preparing..." : "Share PDF"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExport}
+                  disabled={exporting || sharing}
+                  className="inline-flex items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {exporting ? "Preparing..." : "Download PDF"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

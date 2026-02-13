@@ -157,10 +157,10 @@ export default function StudentPage() {
         </Link>
 
         <header className="mt-3 flex flex-col gap-2 sm:mt-4">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h1 className="break-words text-2xl font-semibold tracking-tight sm:text-3xl">
             {student?.name ?? "Loading..."}
           </h1>
-          <p className="text-xs text-zinc-500 sm:text-sm">
+          <p className="break-words text-xs text-zinc-500 sm:text-sm">
             {student?.program}
           </p>
         </header>
@@ -230,7 +230,7 @@ export default function StudentPage() {
                   {sheets.map((sheet) => (
                     <li
                       key={sheet.id}
-                      className="rounded-xl border border-zinc-200 px-4 py-3"
+                      className="min-w-0 rounded-xl border border-zinc-200 px-4 py-3"
                     >
                       {editingId === sheet.id ? (
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -241,7 +241,7 @@ export default function StudentPage() {
                             }
                             className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
                           />
-                          <div className="flex gap-2">
+                          <div className="flex flex-wrap gap-2">
                             <button
                               type="button"
                               onClick={() => saveRename(sheet.id)}
@@ -259,12 +259,12 @@ export default function StudentPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-zinc-900">
+                        <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="min-w-0">
+                            <p className="break-words text-sm font-semibold text-zinc-900">
                               {sheet.title}
                             </p>
-                            <p className="text-xs text-zinc-500">
+                            <p className="break-words text-xs text-zinc-500">
                               Updated{" "}
                               {new Date(sheet.updatedAt).toLocaleDateString()}
                             </p>

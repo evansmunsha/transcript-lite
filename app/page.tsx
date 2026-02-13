@@ -154,6 +154,41 @@ export default function Home() {
     setShareError(null);
     setShareMessage(null);
     const url = window.location.origin;
+    const shareTitle = "Transcript Lite";
+    const shareText =
+      "Try Transcript Lite — an offline student transcript PDF generator.";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url,
+        });
+        setShareMessage("Share menu opened.");
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
+    }
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+      `${shareText} ${url}`
+    )}`;
+    let opened = false;
+    try {
+      opened = window.open(whatsappUrl, "_blank", "noopener,noreferrer") !== null;
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (opened) {
+      setShareMessage("WhatsApp share opened.");
+      return;
+    }
 
     try {
       if (navigator.clipboard?.writeText) {
@@ -161,10 +196,11 @@ export default function Home() {
         setShareMessage("Link copied to clipboard.");
       } else {
         window.prompt("Copy this link", url);
+        setShareMessage("Copy the link and share it.");
       }
     } catch (err) {
       console.error(err);
-      setShareError("Unable to copy the link. Please copy it manually.");
+      setShareError("Unable to share. Please copy the link manually.");
     }
   };
 
@@ -363,7 +399,7 @@ export default function Home() {
               onClick={handleShare}
               className="mt-4 inline-flex items-center justify-center rounded-lg border border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-900"
             >
-              Copy app link
+              Share app
             </button>
             {shareMessage ? (
               <p className="mt-3 text-xs text-emerald-600">{shareMessage}</p>
