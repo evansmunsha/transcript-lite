@@ -148,7 +148,7 @@ export default function StudentPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
+      <div className="mx-auto w-full max-w-full px-4 py-6 sm:max-w-5xl sm:px-6 sm:py-10">
         <Link
           href="/"
           className="text-xs font-semibold uppercase tracking-widest text-zinc-500 hover:text-zinc-800"
@@ -165,10 +165,10 @@ export default function StudentPage() {
           </p>
         </header>
 
-        <section className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.1fr_1fr]">
+        <section className="mt-6 grid max-w-full gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.1fr_1fr]">
           <form
             onSubmit={handleCreateSheet}
-            className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6"
+            className="max-w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6"
           >
             <h2 className="text-lg font-semibold">Create a sheet</h2>
             <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
@@ -195,7 +195,7 @@ export default function StudentPage() {
             ) : null}
           </form>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
+          <div className="max-w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Result sheets</h2>
               <button
@@ -230,7 +230,7 @@ export default function StudentPage() {
                   {sheets.map((sheet) => (
                     <li
                       key={sheet.id}
-                      className="min-w-0 rounded-xl border border-zinc-200 px-4 py-3"
+                      className="min-w-0 max-w-full rounded-xl border border-zinc-200 px-4 py-3"
                     >
                       {editingId === sheet.id ? (
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

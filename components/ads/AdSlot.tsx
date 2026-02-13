@@ -58,7 +58,7 @@ export default function AdSlot({ slot, className }: AdSlotProps) {
 
   return (
     <div
-      className={`rounded-xl border border-zinc-200 bg-white px-4 py-3 ${className ?? ""}`}
+      className={`max-w-full overflow-hidden rounded-xl border border-zinc-200 bg-white px-4 py-3 ${className ?? ""}`}
       aria-label="Advertisement"
     >
       <ins

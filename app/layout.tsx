@@ -23,7 +23,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
         <link rel="icon" href="/icons/icon-32.png" sizes="32x32" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased overflow-x-hidden">
         <Analytics />
         <SwRegister />
         <InstallButton />
