@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import AdSlot from "@/components/ads/AdSlot";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import LinkDialog from "@/components/ui/LinkDialog";
 import {
   createStudent,
   deleteStudent,
@@ -23,6 +25,12 @@ export default function Home() {
   const [backupBusy, setBackupBusy] = useState(false);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
   const [shareError, setShareError] = useState<string | null>(null);
+  const [studentToDeleteId, setStudentToDeleteId] = useState<string | null>(
+    null
+  );
+  const [pendingImportFile, setPendingImportFile] = useState<File | null>(null);
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [manualShareUrl, setManualShareUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dashboardAdSlot = process.env.NEXT_PUBLIC_ADSENSE_SLOT_DASHBOARD ?? "";
 
@@ -64,18 +72,22 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async (studentId: string) => {
-    if (!window.confirm("Delete this student and all their sheets?")) {
+  const confirmDeleteStudent = async () => {
+    if (!studentToDeleteId) {
       return;
     }
 
     setError(null);
     try {
-      await deleteStudent(studentId);
-      setStudents((prev) => prev.filter((student) => student.id !== studentId));
+      await deleteStudent(studentToDeleteId);
+      setStudents((prev) =>
+        prev.filter((student) => student.id !== studentToDeleteId)
+      );
     } catch (err) {
       console.error(err);
       setError("Failed to delete student.");
+    } finally {
+      setStudentToDeleteId(null);
     }
   };
 
@@ -114,21 +126,18 @@ export default function Home() {
     fileInputRef.current?.click();
   };
 
-  const handleImportFile = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
 
     event.target.value = "";
+    setPendingImportFile(file);
+  };
 
-    if (
-      !window.confirm(
-        "Importing a backup will replace all existing data. Continue?"
-      )
-    ) {
+  const confirmImportBackup = async () => {
+    if (!pendingImportFile) {
       return;
     }
 
@@ -137,7 +146,7 @@ export default function Home() {
     setBackupMessage(null);
 
     try {
-      const text = await file.text();
+      const text = await pendingImportFile.text();
       const data = JSON.parse(text);
       await importBackup(data);
       await loadStudents();
@@ -147,6 +156,7 @@ export default function Home() {
       setBackupError("Failed to import backup. Check the file format.");
     } finally {
       setBackupBusy(false);
+      setPendingImportFile(null);
     }
   };
 
@@ -156,7 +166,7 @@ export default function Home() {
     const url = window.location.origin;
     const shareTitle = "Transcript Lite";
     const shareText =
-      "Try Transcript Lite — an offline student transcript PDF generator.";
+      "Try Transcript Lite - an offline student transcript PDF generator.";
 
     try {
       if (navigator.share) {
@@ -195,12 +205,15 @@ export default function Home() {
         await navigator.clipboard.writeText(url);
         setShareMessage("Link copied to clipboard.");
       } else {
-        window.prompt("Copy this link", url);
-        setShareMessage("Copy the link and share it.");
+        setManualShareUrl(url);
+        setLinkDialogOpen(true);
+        setShareMessage("Manual copy popup opened.");
       }
     } catch (err) {
       console.error(err);
-      setShareError("Unable to share. Please copy the link manually.");
+      setManualShareUrl(url);
+      setLinkDialogOpen(true);
+      setShareError("Unable to auto-share. Use the popup to copy the link.");
     }
   };
 
@@ -327,7 +340,7 @@ export default function Home() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDelete(student.id)}
+                          onClick={() => setStudentToDeleteId(student.id)}
                           className="inline-flex items-center justify-center rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:border-rose-300 hover:text-rose-700"
                         >
                           Delete
@@ -442,6 +455,31 @@ export default function Home() {
           Built by Evans Munsha.
         </p>
       </div>
+
+      <ConfirmDialog
+        open={Boolean(studentToDeleteId)}
+        title="Delete student?"
+        message="This removes the student and all linked sheets and rows."
+        confirmLabel="Delete"
+        tone="danger"
+        onConfirm={confirmDeleteStudent}
+        onCancel={() => setStudentToDeleteId(null)}
+      />
+
+      <ConfirmDialog
+        open={Boolean(pendingImportFile)}
+        title="Import backup?"
+        message="Importing a backup will replace all existing data."
+        confirmLabel="Import"
+        onConfirm={confirmImportBackup}
+        onCancel={() => setPendingImportFile(null)}
+      />
+
+      <LinkDialog
+        open={linkDialogOpen}
+        url={manualShareUrl}
+        onClose={() => setLinkDialogOpen(false)}
+      />
     </div>
   );
 }

@@ -15,6 +15,7 @@ import {
   upsertRows,
 } from "@/lib/db";
 import TranscriptPdf, { PdfTemplate } from "@/components/pdf/ResultPdf";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 const EMPTY_FULL_ROW = {
   course: "",
@@ -42,6 +43,10 @@ export default function SheetPage() {
   const [sharing, setSharing] = useState(false);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
   const [shareError, setShareError] = useState<string | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<{
+    id: string;
+    type: "FULL" | "COURSE_ONLY";
+  } | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -162,7 +167,7 @@ export default function SheetPage() {
 
       downloadBlob(result.blob, result.filename);
       setShareMessage(
-        "Sharing not supported on this device. The PDF was downloaded—attach it from Downloads."
+        "Sharing not supported on this device. The PDF was downloaded - attach it from Downloads."
       );
     } catch (err) {
       console.error(err);
@@ -302,16 +307,36 @@ export default function SheetPage() {
     });
   };
 
-  const removeFullRow = async (rowId: string) => {
-    if (!window.confirm("Delete this row?")) {
+  const requestRemoveFullRow = (rowId: string) => {
+    setRowToDelete({ id: rowId, type: "FULL" });
+  };
+
+  const requestRemoveCourseOnly = (rowId: string) => {
+    setRowToDelete({ id: rowId, type: "COURSE_ONLY" });
+  };
+
+  const confirmRemoveRow = async () => {
+    if (!rowToDelete) {
       return;
     }
 
-    setFullRows((prev) => {
-      const next = prev.filter((row) => row.id !== rowId);
-      return next.map((row, idx) => ({ ...row, order: idx }));
-    });
-    await deleteRow(rowId);
+    if (rowToDelete.type === "FULL") {
+      setFullRows((prev) => {
+        const next = prev.filter((row) => row.id !== rowToDelete.id);
+        return next.map((row, idx) => ({ ...row, order: idx }));
+      });
+    } else {
+      setCourseRows((prev) => {
+        const next = prev.filter((row) => row.id !== rowToDelete.id);
+        return next.map((row, idx) => ({ ...row, order: idx }));
+      });
+    }
+
+    try {
+      await deleteRow(rowToDelete.id);
+    } finally {
+      setRowToDelete(null);
+    }
   };
 
   const addCourseOnly = () => {
@@ -337,16 +362,8 @@ export default function SheetPage() {
     );
   };
 
-  const removeCourseOnly = async (rowId: string) => {
-    if (!window.confirm("Delete this course-only entry?")) {
-      return;
-    }
-
-    setCourseRows((prev) => {
-      const next = prev.filter((row) => row.id !== rowId);
-      return next.map((row, idx) => ({ ...row, order: idx }));
-    });
-    await deleteRow(rowId);
+  const cancelRemoveRow = () => {
+    setRowToDelete(null);
   };
 
   if (!loading && !sheet) {
@@ -532,7 +549,7 @@ export default function SheetPage() {
                           </button>
                           <button
                             type="button"
-                            onClick={() => removeFullRow(row.id)}
+                            onClick={() => requestRemoveFullRow(row.id)}
                             className="rounded-md border border-rose-200 px-2 py-1 text-xs font-semibold text-rose-600 transition hover:border-rose-300 hover:text-rose-700"
                           >
                             Delete
@@ -599,7 +616,7 @@ export default function SheetPage() {
                   />
                   <button
                     type="button"
-                    onClick={() => removeCourseOnly(row.id)}
+                    onClick={() => requestRemoveCourseOnly(row.id)}
                     className="inline-flex items-center justify-center rounded-lg border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-600 transition hover:border-rose-300 hover:text-rose-700"
                   >
                     Delete
@@ -701,6 +718,20 @@ export default function SheetPage() {
           </div>
         </div>
       ) : null}
+
+      <ConfirmDialog
+        open={Boolean(rowToDelete)}
+        title="Delete entry?"
+        message={
+          rowToDelete?.type === "COURSE_ONLY"
+            ? "This course-only entry will be removed."
+            : "This row will be removed."
+        }
+        confirmLabel="Delete"
+        tone="danger"
+        onConfirm={confirmRemoveRow}
+        onCancel={cancelRemoveRow}
+      />
     </div>
   );
 }

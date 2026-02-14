@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import AdSlot from "@/components/ads/AdSlot";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   createSheet,
   deleteSheet,
@@ -25,6 +26,7 @@ export default function StudentPage() {
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const [sheetToDeleteId, setSheetToDeleteId] = useState<string | null>(null);
 
   const loadStudent = async (id: string) => {
     setLoading(true);
@@ -79,18 +81,20 @@ export default function StudentPage() {
     }
   };
 
-  const handleDeleteSheet = async (sheetId: string) => {
-    if (!window.confirm("Delete this sheet and all its rows?")) {
+  const confirmDeleteSheet = async () => {
+    if (!sheetToDeleteId) {
       return;
     }
 
     setError(null);
     try {
-      await deleteSheet(sheetId);
-      setSheets((prev) => prev.filter((sheet) => sheet.id !== sheetId));
+      await deleteSheet(sheetToDeleteId);
+      setSheets((prev) => prev.filter((sheet) => sheet.id !== sheetToDeleteId));
     } catch (err) {
       console.error(err);
       setError("Failed to delete sheet.");
+    } finally {
+      setSheetToDeleteId(null);
     }
   };
 
@@ -285,7 +289,7 @@ export default function StudentPage() {
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDeleteSheet(sheet.id)}
+                              onClick={() => setSheetToDeleteId(sheet.id)}
                               className="inline-flex items-center justify-center rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:border-rose-300 hover:text-rose-700"
                             >
                               Delete
@@ -303,6 +307,16 @@ export default function StudentPage() {
           </div>
         </section>
       </div>
+
+      <ConfirmDialog
+        open={Boolean(sheetToDeleteId)}
+        title="Delete sheet?"
+        message="This removes the sheet and all rows inside it."
+        confirmLabel="Delete"
+        tone="danger"
+        onConfirm={confirmDeleteSheet}
+        onCancel={() => setSheetToDeleteId(null)}
+      />
     </div>
   );
 }
